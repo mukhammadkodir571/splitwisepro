@@ -222,7 +222,7 @@ export default function SplitWiseProSimple() {
 
       const group = groups.find((g) => g.accessCode === authForm.accessCode.toUpperCase())
       if (!group) {
-        alert("Noto&apos;g&apos;ri access code!")
+        alert("Noto'g'ri access code kiritildi!")
         return
       }
 
@@ -261,7 +261,7 @@ export default function SplitWiseProSimple() {
         const userGroup = groups.find((g) => g.users.some((u) => u.id === existingUser.id))
         if (userGroup) setCurrentGroup(userGroup)
       } else {
-        alert("Foydalanuvchi topilmadi! Avval ro&apos;yxatdan o&apos;ting.")
+        alert("Foydalanuvchi topilmadi! Avval ro'yxatdan o'ting.")
         return
       }
     }
