@@ -222,7 +222,7 @@ export default function SplitWiseProSimple() {
 
       const group = groups.find((g) => g.accessCode === authForm.accessCode.toUpperCase())
       if (!group) {
-        alert("Noto'g'ri access code kiritildi!")
+        alert("Noto&apos;g&apos;ri access code!")
         return
       }
 
@@ -261,7 +261,7 @@ export default function SplitWiseProSimple() {
         const userGroup = groups.find((g) => g.users.some((u) => u.id === existingUser.id))
         if (userGroup) setCurrentGroup(userGroup)
       } else {
-        alert("Foydalanuvchi topilmadi! Avval ro'yxatdan o'ting.")
+        alert("Foydalanuvchi topilmadi! Avval ro&apos;yxatdan o&apos;ting.")
         return
       }
     }
@@ -590,7 +590,7 @@ export default function SplitWiseProSimple() {
       groups={groups.filter((g) => g.users.some((u) => u.id === currentUser.id))}
       onSelectGroup={(groupId) => {
       const group = groups.find((g) => g.id === groupId)
-      if (group) setCurrentGroup(group)
+    if (group) setCurrentGroup(group)
   }}
   onCreateGroup={() => {
     setIsCreateGroupOpen(true);
@@ -910,8 +910,8 @@ function AuthScreen({
             {mode === "login"
               ? "Hisobingizga kiring"
               : hasGroups
-                ? "Guruhga qo'shiling"
-                : "Birinchi admin ro'yhatdan o'tishingiz kerak"}
+                ? "Guruhga qo&apos;shiling"
+                : "Birinchi admin bo&apos;ling!"}
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -939,19 +939,20 @@ function AuthScreen({
           {mode === "signup" && !hasGroups && (
             <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
               <p className="text-sm text-blue-800 dark:text-blue-200">
-                🎉 Siz birinchi foydalanuvchisiz! Ro'yxatdan o'tganingizdan so'ng guruh yaratishingiz mumkin.
+                🎉 Siz birinchi foydalanuvchisiz! Ro&apos;yxatdan o&apos;tganingizdan so&apos;ng guruh yaratishingiz
+                mumkin.
               </p>
             </div>
           )}
 
           <Button onClick={onAuth} className="w-full" disabled={!form.name || !form.email}>
             <LogIn className="w-4 h-4 mr-2" />
-            {mode === "login" ? "Kirish" : "Ro'yxatdan o'tish"}
+            {mode === "login" ? "Kirish" : "Ro&apos;yxatdan o&apos;tish"}
           </Button>
 
           <div className="text-center">
             <Button variant="link" onClick={() => setMode(mode === "login" ? "signup" : "login")} className="text-sm">
-              {mode === "login" ? "Ro'yxatdan o'tish" : "Allaqachon hisobingiz bormi? Kirish"}
+              {mode === "login" ? "Ro&apos;yxatdan o&apos;tish" : "Allaqachon hisobingiz bormi? Kirish"}
             </Button>
           </div>
         </CardContent>
