@@ -910,8 +910,8 @@ function AuthScreen({
             {mode === "login"
               ? "Hisobingizga kiring"
               : hasGroups
-                ? "Guruhga qo&apos;shiling"
-                : "Birinchi admin bo&apos;ling!"}
+                ? "Guruhga qo'shiling"
+                : "Birinchi admin ro'yhatdan o'tishingiz kerak"}
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -939,20 +939,19 @@ function AuthScreen({
           {mode === "signup" && !hasGroups && (
             <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
               <p className="text-sm text-blue-800 dark:text-blue-200">
-                🎉 Siz birinchi foydalanuvchisiz! Ro&apos;yxatdan o&apos;tganingizdan so&apos;ng guruh yaratishingiz
-                mumkin.
+                🎉 Siz birinchi foydalanuvchisiz! Ro'yxatdan o'tganingizdan so'ng guruh yaratishingiz mumkin.
               </p>
             </div>
           )}
 
           <Button onClick={onAuth} className="w-full" disabled={!form.name || !form.email}>
             <LogIn className="w-4 h-4 mr-2" />
-            {mode === "login" ? "Kirish" : "Ro&apos;yxatdan o&apos;tish"}
+            {mode === "login" ? "Kirish" : "Ro'yxatdan o'tish"}
           </Button>
 
           <div className="text-center">
             <Button variant="link" onClick={() => setMode(mode === "login" ? "signup" : "login")} className="text-sm">
-              {mode === "login" ? "Ro&apos;yxatdan o&apos;tish" : "Allaqachon hisobingiz bormi? Kirish"}
+              {mode === "login" ? "Ro'yxatdan o'tish" : "Allaqachon hisobingiz bormi? Kirish"}
             </Button>
           </div>
         </CardContent>
