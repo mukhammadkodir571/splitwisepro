@@ -72,6 +72,29 @@ interface Feedback {
   createdAt: string
 }
 
+interface AuthForm {
+  name: string
+  email: string
+  accessCode: string
+}
+
+interface CreateGroupForm {
+  name: string
+  description: string
+}
+
+interface ExpenseForm {
+  amount: string
+  description: string
+  category: string
+  date: string
+}
+
+interface FeedbackForm {
+  message: string
+  rating: number
+}
+
 export default function SplitWiseProSimple() {
   // App state
   const [isStarted, setIsStarted] = useState(false)
@@ -82,9 +105,8 @@ export default function SplitWiseProSimple() {
   // Auth state
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [currentGroup, setCurrentGroup] = useState<Group | null>(null)
-  const [isAuthOpen, setIsAuthOpen] = useState(false)
   const [authMode, setAuthMode] = useState<"login" | "signup">("login")
-  const [authForm, setAuthForm] = useState({
+  const [authForm, setAuthForm] = useState<AuthForm>({
     name: "",
     email: "",
     accessCode: "",
@@ -92,7 +114,7 @@ export default function SplitWiseProSimple() {
 
   // Create group state
   const [isCreateGroupOpen, setIsCreateGroupOpen] = useState(false)
-  const [createGroupForm, setCreateGroupForm] = useState({
+  const [createGroupForm, setCreateGroupForm] = useState<CreateGroupForm>({
     name: "",
     description: "",
   })
@@ -101,10 +123,10 @@ export default function SplitWiseProSimple() {
   const [groups, setGroups] = useState<Group[]>([])
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([])
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false)
-  const [feedbackForm, setFeedbackForm] = useState({ message: "", rating: 5 })
+  const [feedbackForm, setFeedbackForm] = useState<FeedbackForm>({ message: "", rating: 5 })
 
   // Daily expense form
-  const [expenseForm, setExpenseForm] = useState({
+  const [expenseForm, setExpenseForm] = useState<ExpenseForm>({
     amount: "",
     description: "",
     category: "Ovqat",
@@ -164,7 +186,6 @@ export default function SplitWiseProSimple() {
   // Handle start button click
   const handleStart = () => {
     setIsStarted(true)
-    setIsAuthOpen(true)
   }
 
   // Generate access code
@@ -190,7 +211,6 @@ export default function SplitWiseProSimple() {
         setCurrentUser(newUser)
         // Guruh yaratish oynasini ochish
         setIsCreateGroupOpen(true)
-        setIsAuthOpen(false)
         return
       }
 
@@ -202,7 +222,7 @@ export default function SplitWiseProSimple() {
 
       const group = groups.find((g) => g.accessCode === authForm.accessCode.toUpperCase())
       if (!group) {
-        alert("Noto'g'ri access code!")
+        alert("Noto&apos;g&apos;ri access code!")
         return
       }
 
@@ -241,12 +261,11 @@ export default function SplitWiseProSimple() {
         const userGroup = groups.find((g) => g.users.some((u) => u.id === existingUser.id))
         if (userGroup) setCurrentGroup(userGroup)
       } else {
-        alert("Foydalanuvchi topilmadi! Avval ro'yxatdan o'ting.")
+        alert("Foydalanuvchi topilmadi! Avval ro&apos;yxatdan o&apos;ting.")
         return
       }
     }
 
-    setIsAuthOpen(false)
     setAuthForm({ name: "", email: "", accessCode: "" })
   }
 
@@ -384,7 +403,7 @@ export default function SplitWiseProSimple() {
   const exportToPDF = async () => {
     if (!currentGroup) return
 
-    const { matrix, spent, stats } = calculateWeeklySettlement()
+    const { matrix, stats } = calculateWeeklySettlement()
     if (!stats || stats.totalSpent === 0) return
 
     try {
@@ -414,8 +433,8 @@ export default function SplitWiseProSimple() {
       doc.setFontSize(10)
 
       currentGroup.users.forEach((user, i) => {
-        const receives = [] // Kim kimdan oladi
-        const pays = [] // Kim kimga beradi
+        const receives: string[] = [] // Kim kimdan oladi
+        const pays: string[] = [] // Kim kimga beradi
 
         currentGroup.users.forEach((otherUser, j) => {
           if (i !== j) {
@@ -440,7 +459,6 @@ export default function SplitWiseProSimple() {
 
           doc.setFontSize(10)
           if (receives.length > 0) {
-            const receives: string[] = [] // Kim kimdan oladi
             const receivesText = `  Oladi: ${receives.join(", ")}`
             if (receivesText.length > 85) {
               const words = receivesText.split(" ")
@@ -465,7 +483,6 @@ export default function SplitWiseProSimple() {
           }
 
           if (pays.length > 0) {
-            const pays: string[] = [] // Kim kimga beradi
             const paysText = `  Beradi: ${pays.join(", ")}`
             if (paysText.length > 85) {
               const words = paysText.split(" ")
@@ -521,13 +538,13 @@ export default function SplitWiseProSimple() {
             <CardContent>
               <div className="text-center py-8">
                 <h2 className="text-xl font-semibold mb-4">Xush kelibsiz!</h2>
-                <p className="text-gray-600 mb-6">Do'stlar bilan xarajatlarni oson va aniq bo'ling! 🎉</p>
+                <p className="text-gray-600 mb-6">Do&apos;stlar bilan xarajatlarni oson va aniq bo&apos;ling! 🎉</p>
                 <div className="space-y-4 max-w-md mx-auto">
                   <div className="flex items-center gap-3 text-left">
                     <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                       <Users className="w-4 h-4 text-blue-600" />
                     </div>
-                    <span className="text-gray-700">Guruh yarating yoki qo'shiling</span>
+                    <span className="text-gray-700">Guruh yarating yoki qo&apos;shiling</span>
                   </div>
                   <div className="flex items-center gap-3 text-left">
                     <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
@@ -556,7 +573,6 @@ export default function SplitWiseProSimple() {
   if (!currentUser) {
     return (
       <AuthScreen
-        isOpen={true}
         mode={authMode}
         setMode={setAuthMode}
         form={authForm}
@@ -571,26 +587,29 @@ export default function SplitWiseProSimple() {
   if (!currentGroup) {
     return (
       <GroupSelection
-        groups={groups.filter((g) => g.users.some((u) => u.id === currentUser.id))}
-        onSelectGroup={(groupId) => {
-          const group = groups.find((g) => g.id === groupId)
-          if (group) setCurrentGroup(group)
-        }}
-        onCreateGroup={() => setIsCreateGroupOpen(true)}
-        user={currentUser}
-        onLogout={handleLogout}
-        isDarkMode={isDarkMode}
-        onToggleTheme={() => setIsDarkMode(!isDarkMode)}
-        isCreateGroupOpen={isCreateGroupOpen}
-        setIsCreateGroupOpen={setIsCreateGroupOpen}
-        createGroupForm={createGroupForm}
-        setCreateGroupForm={setCreateGroupForm}
-        handleCreateGroup={handleCreateGroup}
-      />
+      groups={groups.filter((g) => g.users.some((u) => u.id === currentUser.id))}
+      onSelectGroup={(groupId) => {
+      const group = groups.find((g) => g.id === groupId)
+      if (group) setCurrentGroup(group)
+  }}
+  onCreateGroup={() => {
+    setIsCreateGroupOpen(true);
+    handleCreateGroup();
+  }}
+  onCreateGroupCallback={handleCreateGroup} // Provide the onCreateGroupCallback prop
+  user={currentUser}
+  onLogout={handleLogout}
+  isDarkMode={isDarkMode}
+  onToggleTheme={() => setIsDarkMode(!isDarkMode)}
+  isCreateGroupOpen={isCreateGroupOpen}
+  setIsCreateGroupOpen={setIsCreateGroupOpen}
+  createGroupForm={createGroupForm}
+  setCreateGroupForm={setCreateGroupForm}
+/>
     )
   }
 
-  const { matrix, spent, stats } = calculateWeeklySettlement()
+  const { matrix, stats } = calculateWeeklySettlement()
 
   return (
     <div
@@ -657,7 +676,7 @@ export default function SplitWiseProSimple() {
                     {currentGroup.accessCode}
                   </Badge>
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Bu kodni a'zolarga bering</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Bu kodni a&apos;zolarga bering</div>
               </div>
             </CardContent>
           </Card>
@@ -729,7 +748,7 @@ export default function SplitWiseProSimple() {
                 <div className="flex items-center gap-2 md:gap-3">
                   <Users className="w-6 h-6 md:w-8 md:h-8" />
                   <div>
-                    <p className="text-orange-100 text-xs md:text-sm">A'zolar</p>
+                    <p className="text-orange-100 text-xs md:text-sm">A&apos;zolar</p>
                     <p className="text-lg md:text-2xl font-bold">{currentGroup.users.length}</p>
                   </div>
                 </div>
@@ -754,7 +773,7 @@ export default function SplitWiseProSimple() {
             </TabsTrigger>
             <TabsTrigger value="members" className="flex items-center gap-1 text-xs md:text-sm">
               <Users className="w-3 h-3 md:w-4 md:h-4" />
-              <span className="hidden sm:inline">A'zolar</span>
+              <span className="hidden sm:inline">A&apos;zolar</span>
             </TabsTrigger>
           </TabsList>
 
@@ -780,7 +799,7 @@ export default function SplitWiseProSimple() {
 
           {/* Settlement Tab */}
           <TabsContent value="settlement" className="space-y-4 md:space-y-6">
-            <SettlementTab users={currentGroup.users} matrix={matrix} spent={spent} />
+            <SettlementTab users={currentGroup.users} matrix={matrix} />
           </TabsContent>
 
           {/* Members Tab */}
@@ -841,7 +860,6 @@ export default function SplitWiseProSimple() {
 
 // Auth Screen Component - Simplified
 function AuthScreen({
-  isOpen,
   mode,
   setMode,
   form,
@@ -850,11 +868,10 @@ function AuthScreen({
   isDarkMode,
   onToggleTheme,
 }: {
-  isOpen: boolean
   mode: "login" | "signup"
   setMode: (mode: "login" | "signup") => void
-  form: any
-  setForm: any
+  form: AuthForm
+  setForm: (form: AuthForm) => void
   onAuth: () => void
   isDarkMode: boolean
   onToggleTheme: () => void
@@ -888,9 +905,13 @@ function AuthScreen({
               {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </Button>
           </div>
-          <CardTitle>{mode === "login" ? "Kirish" : "Ro'yxatdan o'tish"}</CardTitle>
+          <CardTitle>{mode === "login" ? "Kirish" : "Ro&apos;yxatdan o&apos;tish"}</CardTitle>
           <p className="text-gray-600 dark:text-gray-400">
-            {mode === "login" ? "Hisobingizga kiring" : hasGroups ? "Guruhga qo'shiling" : "Birinchi admin bo'ling!"}
+            {mode === "login"
+              ? "Hisobingizga kiring"
+              : hasGroups
+                ? "Guruhga qo&apos;shiling"
+                : "Birinchi admin bo&apos;ling!"}
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -918,19 +939,20 @@ function AuthScreen({
           {mode === "signup" && !hasGroups && (
             <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
               <p className="text-sm text-blue-800 dark:text-blue-200">
-                🎉 Siz birinchi foydalanuvchisiz! Ro'yxatdan o'tganingizdan so'ng guruh yaratishingiz mumkin.
+                🎉 Siz birinchi foydalanuvchisiz! Ro&apos;yxatdan o&apos;tganingizdan so&apos;ng guruh yaratishingiz
+                mumkin.
               </p>
             </div>
           )}
 
           <Button onClick={onAuth} className="w-full" disabled={!form.name || !form.email}>
             <LogIn className="w-4 h-4 mr-2" />
-            {mode === "login" ? "Kirish" : "Ro'yxatdan o'tish"}
+            {mode === "login" ? "Kirish" : "Ro&apos;yxatdan o&apos;tish"}
           </Button>
 
           <div className="text-center">
             <Button variant="link" onClick={() => setMode(mode === "login" ? "signup" : "login")} className="text-sm">
-              {mode === "login" ? "Ro'yxatdan o'tish" : "Allaqachon hisobingiz bormi? Kirish"}
+              {mode === "login" ? "Ro&apos;yxatdan o&apos;tish" : "Allaqachon hisobingiz bormi? Kirish"}
             </Button>
           </div>
         </CardContent>
@@ -963,9 +985,9 @@ function GroupSelection({
   onToggleTheme: () => void
   isCreateGroupOpen: boolean
   setIsCreateGroupOpen: (open: boolean) => void
-  createGroupForm: any
-  setCreateGroupForm: any
-  handleCreateGroup: () => void
+  createGroupForm: CreateGroupForm
+  setCreateGroupForm: (form: CreateGroupForm) => void
+  onCreateGroupCallback: () => void
 }) {
   return (
     <div
@@ -994,8 +1016,10 @@ function GroupSelection({
           {groups.length === 0 ? (
             <div className="text-center py-8">
               <Users className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-              <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400 mb-2">Guruhlar yo'q</h3>
-              <p className="text-gray-500 dark:text-gray-500 mb-4">Guruh yarating yoki access code bilan qo'shiling</p>
+              <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400 mb-2">Guruhlar yo&apos;q</h3>
+              <p className="text-gray-500 dark:text-gray-500 mb-4">
+                Guruh yarating yoki access code bilan qo&apos;shiling
+              </p>
               <Button onClick={onCreateGroup}>
                 <Plus className="w-4 h-4 mr-2" />
                 Yangi guruh yaratish
@@ -1016,7 +1040,7 @@ function GroupSelection({
                           <h3 className="font-semibold">{group.name}</h3>
                           <p className="text-sm text-gray-600 dark:text-gray-400">{group.description}</p>
                           <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                            {group.users.length} a'zo • {group.dailyExpenses.length} xarajat
+                            {group.users.length} a&apos;zo • {group.dailyExpenses.length} xarajat
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
@@ -1078,8 +1102,8 @@ function DailyExpenseTab({
   categories,
   onAddExpense,
 }: {
-  form: any
-  setForm: any
+  form: ExpenseForm
+  setForm: (form: ExpenseForm) => void
   categories: string[]
   onAddExpense: () => void
 }) {
@@ -1088,7 +1112,7 @@ function DailyExpenseTab({
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Plus className="w-5 h-5" />
-          Kunlik xarajat qo'shish
+          Kunlik xarajat qo&apos;shish
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -1128,7 +1152,7 @@ function DailyExpenseTab({
           className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700"
         >
           <Plus className="w-4 h-4 mr-2" />
-          Xarajat qo'shish
+          Xarajat qo&apos;shish
         </Button>
       </CardContent>
     </Card>
@@ -1161,7 +1185,7 @@ function HistoryTab({
         {expenses.length === 0 ? (
           <div className="text-center py-8 text-gray-500 dark:text-gray-400">
             <FileText className="w-16 h-16 mx-auto mb-4 opacity-50" />
-            <p>Hozircha xarajat yo'q</p>
+            <p>Hozircha xarajat yo&apos;q</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -1194,7 +1218,7 @@ function HistoryTab({
                       <TableCell>
                         <Badge variant="outline">{expense.category}</Badge>
                       </TableCell>
-                      <TableCell className="font-medium">{expense.amount.toLocaleString()} so'm</TableCell>
+                      <TableCell className="font-medium">{expense.amount.toLocaleString()} so&apos;m</TableCell>
                       <TableCell>
                         {(expense.userId === currentUser.id || currentUser.role === "admin") && (
                           <Button
@@ -1223,11 +1247,9 @@ function HistoryTab({
 function SettlementTab({
   users,
   matrix,
-  spent,
 }: {
   users: User[]
   matrix: number[][]
-  spent: Record<string, number>
 }) {
   if (users.length === 0) {
     return (
@@ -1304,7 +1326,7 @@ function SettlementTab({
                           </div>
                           {matrix[i][j] !== 0 && (
                             <div className="text-xs text-gray-500 dark:text-gray-400">
-                              {matrix[i][j] > 0 ? "to'laydi" : "oladi"}
+                              {matrix[i][j] > 0 ? "to&apos;laydi" : "oladi"}
                             </div>
                           )}
                         </div>
@@ -1322,13 +1344,13 @@ function SettlementTab({
 }
 
 // Members Tab Component
-function MembersTab({ group, currentUser }: { group: Group; currentUser: User }) {
+function MembersTab({ group }: { group: Group; currentUser: User }) {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Users className="w-5 h-5" />
-          Guruh a'zolari ({group.users.length})
+          Guruh a&apos;zolari ({group.users.length})
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -1347,7 +1369,7 @@ function MembersTab({ group, currentUser }: { group: Group; currentUser: User })
               <div className="flex items-center gap-2">
                 {user.role === "admin" && <Shield className="w-4 h-4 text-blue-500" />}
                 <Badge variant={user.role === "admin" ? "default" : "secondary"}>
-                  {user.role === "admin" ? "Admin" : "A'zo"}
+                  {user.role === "admin" ? "Admin" : "A&apos;zo"}
                 </Badge>
               </div>
             </div>
